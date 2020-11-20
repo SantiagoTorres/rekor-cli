@@ -126,6 +126,10 @@ func (s PGPSignature) CanonicalValue() ([]byte, error) {
 		return nil, err
 	}
 
+	if err := ew.Close(); err != nil {
+		return nil, err
+	}
+
 	return canonicalBuffer.Bytes(), nil
 }
 
