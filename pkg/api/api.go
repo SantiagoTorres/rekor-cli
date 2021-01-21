@@ -25,6 +25,8 @@ import (
 	"github.com/google/trillian/crypto/keyspb"
 	radix "github.com/mediocregopher/radix/v4"
 	"github.com/projectrekor/rekor/pkg/log"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
@@ -87,7 +89,23 @@ var (
 	redisClient radix.Client
 )
 
+// metrics
+
+var (
+	promLogSize prometheus.Gauge
+)
+
+func initMetrics() {
+	log.Logger.Info("Initializing prometheus metrics")
+	promLogSize = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "rekor_tree_size",
+		Help: "Current tree size.",
+	})
+
+}
+
 func ConfigureAPI() {
+	initMetrics()
 	cfg := radix.PoolConfig{}
 	var err error
 	api, err = NewAPI()

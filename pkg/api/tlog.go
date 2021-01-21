@@ -73,6 +73,10 @@ func GetLogInfoHandler(params tlog.GetLogInfoParams) middleware.Responder {
 		TreeSize:       &treeSize,
 		SignedTreeHead: &sth,
 	}
+
+	// Set metrics
+	promLogSize.Set(float64(treeSize))
+
 	return tlog.NewGetLogInfoOK().WithPayload(&logInfo)
 }
 
