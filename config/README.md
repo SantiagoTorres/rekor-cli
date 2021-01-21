@@ -40,3 +40,13 @@ ko apply -f config/
 Install cert-manager with helm, using https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm
 
 Install nginx-ingress with: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.43.0/deploy/static/provider/cloud/deploy.yaml
+
+## Prometheus
+
+Installed Prometheus Chart with:
+
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add kube-state-metrics https://kubernetes.github.io/kube-state-metrics
+helm install prometheus prometheus-community/prometheus --namespace=prometheus
+```
