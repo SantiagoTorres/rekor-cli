@@ -38,6 +38,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/tidwall/pretty v1.0.2 // indirect
 	github.com/urfave/negroni v1.0.0
+	go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1
 	go.uber.org/goleak v1.1.10
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad

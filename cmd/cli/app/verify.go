@@ -116,6 +116,11 @@ var verifyCmd = &cobra.Command{
 					if err != nil {
 						return nil, err
 					}
+				case "pkcs7":
+					entry, err = CreatePKCS7FromPFlags()
+					if err != nil {
+						return nil, err
+					}
 				default:
 					return nil, errors.New("invalid type specified")
 				}

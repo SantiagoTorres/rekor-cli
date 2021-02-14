@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://rekor.dev/types/pkcs7/pkcs7_schema.json",
+    "title": "pkcs7 Schema",
+    "description": "Schema for pkcs7 objects",
+    "type": "object",
+    "oneOf": [
+        {
+            "$ref": "v0.0.1/pkcs7_v0_0_1_schema.json"
+        }
+    ]
+}

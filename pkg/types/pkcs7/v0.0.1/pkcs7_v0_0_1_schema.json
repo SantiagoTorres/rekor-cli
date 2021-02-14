@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://rekor.dev/types/rpm/rpm_v0_0_1_schema.json",
+    "title": "RPM v0.0.1 Schema",
+    "description": "Schema for RPM entries",
+    "type": "object",
+    "properties": {
+        "content": {
+            "description": "PEM-encoded PKCS7 content.",
+            "type": "string",
+            "format": "byte"
+        }
+    },
+    "required": [ "content" ]
+}

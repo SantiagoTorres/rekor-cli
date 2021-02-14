@@ -569,6 +569,32 @@ func init() {
         }
       }
     },
+    "pkcs7": {
+      "description": "pkcs7 object",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProposedEntry"
+        },
+        {
+          "required": [
+            "apiVersion",
+            "spec"
+          ],
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "pkg/types/pkcs7/pkcs7_schema.json"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
     "rekord": {
       "description": "Rekord object",
       "type": "object",
@@ -1553,6 +1579,60 @@ func init() {
           }
         }
       }
+    },
+    "pkcs7": {
+      "description": "pkcs7 object",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/ProposedEntry"
+        },
+        {
+          "required": [
+            "apiVersion",
+            "spec"
+          ],
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+            },
+            "spec": {
+              "$ref": "#/definitions/pkcs7Schema"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "pkcs7Schema": {
+      "description": "Schema for pkcs7 objects",
+      "type": "object",
+      "title": "pkcs7 Schema",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/pkcs7V001Schema"
+        }
+      ],
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "$id": "http://rekor.dev/types/pkcs7/pkcs7_schema.json"
+    },
+    "pkcs7V001Schema": {
+      "description": "Schema for RPM entries",
+      "type": "object",
+      "title": "RPM v0.0.1 Schema",
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "content": {
+          "description": "PEM-encoded PKCS7 content.",
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "$schema": "http://json-schema.org/draft-07/schema",
+      "$id": "http://rekor.dev/types/rpm/rpm_v0_0_1_schema.json"
     },
     "rekord": {
       "description": "Rekord object",

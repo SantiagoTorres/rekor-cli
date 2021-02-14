@@ -31,6 +31,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/sigstore/rekor/pkg/generated/models"
+	pkcs7_v001 "github.com/sigstore/rekor/pkg/types/pkcs7/v0.0.1"
 	rekord_v001 "github.com/sigstore/rekor/pkg/types/rekord/v0.0.1"
 	rpm_v001 "github.com/sigstore/rekor/pkg/types/rpm/v0.0.1"
 	"github.com/spf13/cobra"
@@ -136,6 +137,22 @@ func validateArtifactPFlags(uuidValid, indexValid bool) error {
 	}
 
 	return nil
+}
+
+func CreatePKCS7FromPFlags() (models.ProposedEntry, error) {
+	returnVal := models.Pkcs7{}
+	re := new(pkcs7_v001.V001Entry)
+
+	pk := viper.GetString("entry")
+	pkBytes, err := ioutil.ReadFile(filepath.Clean(pk))
+	if err != nil {
+		return nil, fmt.Errorf("error processing 'pkcs7' file: %v", err)
+	}
+	b64Bytes := strfmt.Base64(pkBytes)
+	re.PKCS7Model.Content = &b64Bytes
+	returnVal.APIVersion = swag.String(re.APIVersion())
+	returnVal.Spec = re.PKCS7Model
+	return &returnVal, nil
 }
 
 func CreateRpmFromPFlags() (models.ProposedEntry, error) {
@@ -357,12 +374,13 @@ func (t *typeFlag) Set(s string) error {
 	set := map[string]struct{}{
 		"rekord": {},
 		"rpm":    {},
+		"pkcs7":  {},
 	}
 	if _, ok := set[s]; ok {
 		t.value = s
 		return nil
 	}
-	return fmt.Errorf("value specified is invalid: [%s] supported values are: [rekord, rpm]", s)
+	return fmt.Errorf("value specified is invalid: [%s] supported values are: [rekord, rpm, pkcs7]", s)
 }
 
 type pkiFormatFlag struct {
