@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://rekor.dev/types/in_toto/in_toto.json",
+    "title": "in_toto v0.0.1 Schema",
+    "description": "Schema for in_toto link metadata entries",
+    "type": "object",
+    "properties": {
+        "publicKey" : {
+            "description": "The PGP public key that can verify the RPM signature",
+            "type": "object",
+            "properties": {
+                "url": {
+                    "description": "Specifies the location of the public key",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "content": {
+                    "description": "Specifies the content of the public key inline within the document",
+                    "type": "string",
+                    "format": "byte"
+                }
+            },
+            "oneOf": [
+                {
+                    "required": [ "url" ]
+                },
+                {
+                    "required": [ "content" ]
+                }
+            ]
+        },
+        "metablock": {
+            "description": "in-toto Link information associating material artifacts and produced artifacts",
+            "type": "object",
+            "properties": {
+                "signed": {
+                    "description": "The signed payload",
+                    "type": "object",
+                    "$ref": "in_toto_link_v0_0_1_schema.json"
+                },
+                "signatures": {
+                    "description": "The signature(s) over the link",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "in_toto_signature_v0_0_1_schema.json"
+                    }
+                }
+            }
+        },
+        "extraData": {
+            "description": "Arbitrary content to be included in the verifiable entry in the transparency log", 
+            "type": "object",
+            "additionalProperties": true
+        }
+    },
+    "required": [ "publicKey", "metablock" ]
+}

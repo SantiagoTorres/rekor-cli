@@ -1,0 +1,88 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://rekor.dev/types/in_toto/in_toto.json",
+    "title": "in_toto link payload v0.0.1 Schema",
+    "description": "Schema for in_toto link payload",
+    "type": "object",
+    "properties": {
+        "name": {
+            "description": "This link's name (for lookup and matching)",
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "_type": {
+            "description": "Link Type Identifier",
+            "type": "string",
+            "enum": ["Link"]
+        },
+        "environment": {
+            "description": "Optional Environment Information",
+            "type": "object"
+        },
+        "byproducts": {
+            "description": "Optional ByProducts Information (e.g., logs, side-effects)",
+            "type": "object"
+        },
+        "materials": {
+            "description": "Describes the artifacts used in this supply chain action",
+            "type": "object",
+            "properties": {
+                "URI": {
+                    "description": "The identifier of this artifact",
+                    "type": "string"
+                },
+                "hash": {
+                    "type": "object",
+                    "properties": {
+                        "algorithm": {
+                            "description": "The hashing function used to compute the hash value",
+                            "type": "string",
+                            "enum": [ "sha256" ]
+                        },
+                        "value": {
+                            "description": "The hash value for the package",
+                            "type": "string"
+                        }
+                    },
+                    "required": [ "algorithm", "value" ]
+                }
+            }
+        },
+        "products": {
+            "description": "Describes the artifacts produced in this supply chain action",
+            "type": "object",
+            "properties": {
+                "URI": {
+                    "description": "The identifier of this artifact",
+                    "type": "string"
+                },
+                "hash": {
+                    "type": "object",
+                    "properties": {
+                        "algorithm": {
+                            "description": "The hashing function used to compute the hash value",
+                            "type": "string",
+                            "enum": [ "sha256" ]
+                        },
+                        "value": {
+                            "description": "The hash value for the package",
+                            "type": "string"
+                        }
+                    },
+                    "required": [ "algorithm", "value" ]
+                }
+            }
+        },
+        "command": {
+            "description": "Specifies the action performed (e.g., go build ./...)",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [ "materials", "products", "name", "environment", "byproducts", "command"]
+}
+
