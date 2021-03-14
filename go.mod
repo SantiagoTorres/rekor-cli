@@ -21,6 +21,7 @@ require (
 	github.com/google/certificate-transparency-go v1.1.0 // indirect
 	github.com/google/rpmpack v0.0.0-20210107155803-d6befbf05148
 	github.com/google/trillian v1.3.13
+	github.com/in-toto/in-toto-golang v0.1.0 // indirect
 	github.com/jedisct1/go-minisign v0.0.0-20210106175330-e54e81d562c7
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

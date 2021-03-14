@@ -7,10 +7,7 @@
     "properties": {
         "name": {
             "description": "This link's name (for lookup and matching)",
-            "type": "object",
-            "additionalProperties": {
-                "type": "string"
-            }
+            "type": "string"
         },
         "_type": {
             "description": "Link Type Identifier",
