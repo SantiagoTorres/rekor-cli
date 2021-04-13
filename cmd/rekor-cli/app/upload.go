@@ -80,6 +80,8 @@ var uploadCmd = &cobra.Command{
 			}
 		case "jar":
 			entry, err = CreateJarFromPFlags()
+		case "tuf":
+			entry, err = CreateTUFFromPFlags()
 			if err != nil {
 				return nil, err
 			}
