@@ -27,7 +27,7 @@ import (
 )
 
 type UnmarshalTester struct {
-	models.InToto
+	models.Tuf
 }
 
 func (u UnmarshalTester) NewEntry() types.EntryImpl {
@@ -58,6 +58,10 @@ func (u UnmarshalTester) Unmarshal(pe models.ProposedEntry) error {
 	return nil
 }
 
+func (u UnmarshalTester) Validate() error {
+	return nil
+}
+
 type UnmarshalFailsTester struct {
 	UnmarshalTester
 }
@@ -70,7 +74,7 @@ func (u UnmarshalFailsTester) Unmarshal(pe models.ProposedEntry) error {
 	return errors.New("error")
 }
 
-func TestInTotoType(t *testing.T) {
+func TestTUFType(t *testing.T) {
 	// empty to start
 	if len(SemVerToFacFnMap.VersionFactories) != 0 {
 		t.Error("semver range was not blank at start of test")
@@ -90,31 +94,31 @@ func TestInTotoType(t *testing.T) {
 		t.Error("valid semver range was not added to SemVerToFacFnMap")
 	}
 
-	u.InToto.APIVersion = swag.String("2.0.1")
-	brt := BaseInTotoType{}
+	u.Tuf.APIVersion = swag.String("2.0.1")
+	brt := BaseTufType{}
 
 	// version requested matches implementation in map
-	if _, err := brt.UnmarshalEntry(&u.InToto); err != nil {
+	if _, err := brt.UnmarshalEntry(&u.Tuf); err != nil {
 		t.Errorf("unexpected error in Unmarshal: %v", err)
 	}
 
 	// version requested fails to match implementation in map
-	u.InToto.APIVersion = swag.String("1.2.2")
-	if _, err := brt.UnmarshalEntry(&u.InToto); err == nil {
+	u.Tuf.APIVersion = swag.String("1.2.2")
+	if _, err := brt.UnmarshalEntry(&u.Tuf); err == nil {
 		t.Error("unexpected success in Unmarshal for non-matching version")
 	}
 
 	// error in Unmarshal call is raised appropriately
-	u.InToto.APIVersion = swag.String("2.2.0")
+	u.Tuf.APIVersion = swag.String("2.2.0")
 	u2 := UnmarshalFailsTester{}
 	SemVerToFacFnMap.Set(">= 1.2.3", u2.NewEntry)
-	if _, err := brt.UnmarshalEntry(&u.InToto); err == nil {
+	if _, err := brt.UnmarshalEntry(&u.Tuf); err == nil {
 		t.Error("unexpected success in Unmarshal when error is thrown")
 	}
 
 	// version requested fails to match implementation in map
-	u.InToto.APIVersion = swag.String("not_a_version")
-	if _, err := brt.UnmarshalEntry(&u.InToto); err == nil {
+	u.Tuf.APIVersion = swag.String("not_a_version")
+	if _, err := brt.UnmarshalEntry(&u.Tuf); err == nil {
 		t.Error("unexpected success in Unmarshal for invalid version")
 	}
 }

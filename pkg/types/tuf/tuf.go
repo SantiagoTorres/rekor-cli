@@ -21,7 +21,7 @@ import (
 	"github.com/sigstore/rekor/pkg/types"
 	"github.com/sigstore/rekor/pkg/util"
 
-	//"github.com/go-openapi/swag"
+	"github.com/go-openapi/swag"
 	"github.com/sigstore/rekor/pkg/generated/models"
 )
 
@@ -51,15 +51,15 @@ func (rt BaseTufType) UnmarshalEntry(pe models.ProposedEntry) (types.EntryImpl, 
 		return nil, fmt.Errorf("cannot unmarshal non-tuf types %+v", pe)
 	}
 
-	if genFn, found := SemVerToFacFnMap.Get("0.0.1"); found {
+	if genFn, found := SemVerToFacFnMap.Get(swag.StringValue(tuf.APIVersion)); found {
 		entry := genFn()
 		if entry == nil {
-			return nil, fmt.Errorf("failure generating tuf object for version '%v'", "0.0.1")
+			return nil, fmt.Errorf("failure generating tuf object for version '%v'", tuf.APIVersion)
 		}
 		if err := entry.Unmarshal(tuf); err != nil {
 			return nil, err
 		}
 		return entry, nil
 	}
-	return nil, fmt.Errorf("TufType implementation for version '%v' not found", "0.0.1")
+	return nil, fmt.Errorf("TufType implementation for version '%v' not found", swag.StringValue(tuf.APIVersion))
 }

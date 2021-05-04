@@ -26,7 +26,7 @@ import (
 	"testing"
     "io/ioutil"
 
-	//"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/sigstore/rekor/pkg/generated/models"
 	"go.uber.org/goleak"
@@ -82,15 +82,16 @@ func TestCrossFieldValidation(t *testing.T) {
 			caseDesc:               "empty obj",
 			entry:                  V001Entry{},
 			expectUnmarshalSuccess: false,
+			expectCanonicalizeSuccess: true,
 		},
 		{
 			caseDesc: "valid obj with extradata",
 			entry: V001Entry{
-				InTotoModel: models.InTotoV001Schema{
-					PublicKey: &models.InTotoV001SchemaPublicKey{
-						//Content: strfmt.Base64(keyBytes),
+				TufModel: models.TufV001Schema{
+					PublicKey: &models.TufV001SchemaPublicKey{
+						Content: strfmt.Base64(keyBytes),
 					},
-					Metablock: &models.InTotoV001SchemaMetablock{},
+					Metablock: &models.TufV001SchemaMetablock{},
 					ExtraData: []byte("{\"something\": \"here\""),
 				},
 			},
@@ -106,9 +107,9 @@ func TestCrossFieldValidation(t *testing.T) {
 		}
 
 		v := &V001Entry{}
-		r := models.InToto{
+		r := models.Tuf{
 			APIVersion: swag.String(tc.entry.APIVersion()),
-			Spec:       tc.entry.InTotoModel,
+			Spec:       tc.entry.TufModel,
 		}
 		if err := v.Unmarshal(&r); (err == nil) != tc.expectUnmarshalSuccess {
 			t.Errorf("unexpected result in '%v': %v", tc.caseDesc, err)
