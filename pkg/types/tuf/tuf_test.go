@@ -1,18 +1,17 @@
-/*
-Copyright © 2021 Bob Callaway <bcallawa@redhat.com>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+//
+// Copyright 2021 The Sigstore Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package tuf
 
@@ -22,6 +21,7 @@ import (
 	"testing"
 
 	"github.com/go-openapi/swag"
+
 	"github.com/sigstore/rekor/pkg/generated/models"
 	"github.com/sigstore/rekor/pkg/types"
 )
@@ -76,26 +76,26 @@ func (u UnmarshalFailsTester) Unmarshal(pe models.ProposedEntry) error {
 
 func TestTUFType(t *testing.T) {
 	// empty to start
-	if len(SemVerToFacFnMap.VersionFactories) != 0 {
+	if VersionMap.Count() != 0 {
 		t.Error("semver range was not blank at start of test")
 	}
 
 	u := UnmarshalTester{}
 	// ensure semver range parser is working
 	invalidSemVerRange := "not a valid semver range"
-	SemVerToFacFnMap.Set(invalidSemVerRange, u.NewEntry)
-	if len(SemVerToFacFnMap.VersionFactories) > 0 {
+    err := VersionMap.SetEntryFactory(invalidSemVerRange, u.NewEntry)
+	if err == nil || VersionMap.Count() > 0 {
 		t.Error("invalid semver range was incorrectly added to SemVerToFacFnMap")
 	}
 
 	// valid semver range can be parsed
-	SemVerToFacFnMap.Set(">= 1.2.3", u.NewEntry)
-	if len(SemVerToFacFnMap.VersionFactories) != 1 {
+	err = VersionMap.SetEntryFactory(">= 1.2.3", u.NewEntry)
+	if err != nil || VersionMap.Count() != 1 {
 		t.Error("valid semver range was not added to SemVerToFacFnMap")
 	}
 
 	u.Tuf.APIVersion = swag.String("2.0.1")
-	brt := BaseTufType{}
+	brt := New()
 
 	// version requested matches implementation in map
 	if _, err := brt.UnmarshalEntry(&u.Tuf); err != nil {
@@ -111,7 +111,7 @@ func TestTUFType(t *testing.T) {
 	// error in Unmarshal call is raised appropriately
 	u.Tuf.APIVersion = swag.String("2.2.0")
 	u2 := UnmarshalFailsTester{}
-	SemVerToFacFnMap.Set(">= 1.2.3", u2.NewEntry)
+	_ = VersionMap.SetEntryFactory(">= 1.2.3", u2.NewEntry)
 	if _, err := brt.UnmarshalEntry(&u.Tuf); err == nil {
 		t.Error("unexpected success in Unmarshal when error is thrown")
 	}

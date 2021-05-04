@@ -1,18 +1,18 @@
-/*
-Copyright © 2021 Bob Callaway <bcallawa@redhat.com>
+//
+// Copyright 2021 The Sigstore Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package tuf
 
 import (
@@ -49,7 +49,9 @@ const (
 )
 
 func init() {
-	tuf.SemVerToFacFnMap.Set(APIVERSION, NewEntry)
+	if err := tuf.VersionMap.SetEntryFactory(APIVERSION, NewEntry); err != nil {
+		log.Logger.Panic(err)
+	}
 }
 
 type V001Entry struct {
@@ -111,25 +113,17 @@ func (v *V001Entry) Unmarshal(pe models.ProposedEntry) error {
 		return errors.New("cannot unmarshal non tuf v0.0.1 type")
 	}
 
-	cfg := mapstructure.DecoderConfig{
-		DecodeHook: Base64StringtoByteArray(),
-		Result:     &v.TufModel,
-	}
-
-	dec, err := mapstructure.NewDecoder(&cfg)
-	if err != nil {
-		return fmt.Errorf("error initializing decoder: %w", err)
-	}
-
-	if err := dec.Decode(tuf.Spec); err != nil {
+	if err := types.DecodeEntry(tuf.Spec, &v.TufModel); err != nil {
 		return err
 	}
+
 	// field validation
 	if err := v.TufModel.Validate(strfmt.Default); err != nil {
 		return err
 	}
 	// cross field validation
-	return v.Validate()
+    //return v.Validate()
+    return nil
 
 }
 

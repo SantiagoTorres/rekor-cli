@@ -211,6 +211,8 @@ func CreateJarFromPFlags() (models.ProposedEntry, error) {
 		returnVal.APIVersion = swag.String(re.APIVersion())
 		returnVal.Spec = re.JARModel
 	}
+	return &returnVal, nil
+}
 
 func CreateTUFFromPFlags() (models.ProposedEntry, error) {
 	returnVal := models.Tuf{}
